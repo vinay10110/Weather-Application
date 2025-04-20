@@ -1,4 +1,3 @@
-
 export const geoApiOptions = {
 	method: 'GET',
 	headers: {
