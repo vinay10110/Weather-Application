@@ -1,95 +1,97 @@
 # Weather Application
 
-## What is the Project About?
-A modern, user-friendly weather application built with React that provides real-time weather information for cities worldwide. The application offers both current weather conditions and a 7-day forecast, making it easy for users to plan ahead.
+A React-based weather app that lets you search for cities and view current conditions and a 7-period daily forecast. City search is powered by GeoDB Cities (via RapidAPI), and weather data comes from OpenWeather.
 
-## What Does it Do?
-- Provides real-time weather data for any major city
-- Displays detailed current weather information including:
-  - Temperature in Celsius
-  - Weather description
-  - Visibility conditions
-  - Wind speed
-  - Humidity levels
-  - Atmospheric pressure
-- Features a 7-day weather forecast with:
-  - Daily temperature ranges
-  - Weather conditions
-  - Detailed meteorological data
-- Offers city search functionality with autocomplete
-- Responsive design for both desktop and mobile use
+## Live Demo
+https://weather-app-yo51.onrender.com/
 
-## How Does it Help in Real-Life?
-- **Travel Planning**: Helps travelers prepare for weather conditions at their destination
-- **Outdoor Activities**: Assists in planning outdoor events and activities
-- **Daily Planning**: Enables better preparation for daily commutes and activities
-- **Weather Monitoring**: Keeps users informed about changing weather conditions
-- **Safety Awareness**: Provides advance warning of potential adverse weather conditions
+## Features
+- **City search with autocomplete** using `react-select-async-paginate` and GeoDB Cities API
+- **Current weather**: temperature, description, icon, visibility, wind speed, humidity, pressure
+- **7-item forecast** displayed in an accessible accordion with daily details
+- **Clean UI** with weather icons from `public/icons/`
 
 ## Tech Stack
-### Frontend
-- React.js (v18.2.0)
-- CSS3
-- HTML5
-- Modern JavaScript (ES6+)
-
-### APIs
-1. OpenWeather API
-   - Provides current weather data
-   - Delivers 7-day weather forecasts
-   - Weather condition icons
-   - Units in metric system
-
-2. GeoDB Cities API
-   - City search functionality
-   - Population-based filtering
-   - Geographic coordinates
-   - City information worldwide
-
-### Frameworks and Libraries
-- React (^18.2.0)
-- React DOM (^18.2.0)
-- React Accessible Accordion (^5.0.0) - For expandable forecast details
-- React Select (^5.8.0) - For enhanced city selection
-- React Select Async Paginate (^0.7.3) - For paginated city search
-- React Testing Library - For component testing
-- Jest - For unit testing
+- **React 18** (Create React App)
+- **react-select-async-paginate**, **react-select**
+- **react-accessible-accordion**
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20.11.0 or higher
-- npm (Node Package Manager)
+- Node.js 18+
+- npm 8+
+- API keys for RapidAPI (GeoDB Cities) and OpenWeather
 
-### Installation
-1. Clone the repository
-2. Install dependencies:
-\`\`\`bash
+### 1) Install dependencies
+```bash
 npm install
-\`\`\`
+```
 
-### Running the Application
-Start the development server:
-\`\`\`bash
+### 2) Configure environment
+Create a `.env` file in the project root (you can copy `.env.example`). Example values:
+```bash
+# RapidAPI (GeoDB Cities)
+REACT_APP_RAPIDAPI_KEY=your_rapidapi_key
+REACT_APP_RAPIDAPI_HOST=wft-geo-db.p.rapidapi.com
+REACT_APP_GEO_API_URL=https://wft-geo-db.p.rapidapi.com/v1/geo
+
+# OpenWeather
+REACT_APP_WEATHER_API_URL=https://api.openweathermap.org/data/2.5
+REACT_APP_WEATHER_API_KEY=your_openweather_api_key
+```
+Notes:
+- CRA only exposes env vars prefixed with `REACT_APP_`.
+- These values are read in `src/api.js`.
+
+### 3) Run the dev server
+```bash
 npm start
-\`\`\`
-The application will be available at http://localhost:3000
+```
+App will be available at http://localhost:3000
 
-### Building for Production
-Create a production build:
-\`\`\`bash
+### 4) Build for production
+```bash
 npm run build
-\`\`\`
+```
 
-## Docker Support
-The application can be containerized using Docker:
-\`\`\`bash
-docker build -t weather-app .
-docker run -p 3000:3000 weather-app
-\`\`\`
+## Available Scripts
+- `npm start` – start dev server
+- `npm run build` – production build
+- `npm test` – run tests
+- `npm run eject` – eject CRA config
 
-## Testing
-Run the test suite:
-\`\`\`bash
-npm test
-\`\`\`
+## Docker
+Run with a prebuilt image from Docker Hub.
+
+Pull the image:
+```bash
+docker pull vinay10110/weather-app:latest
+```
+Run the image locally (serves via Nginx on port 80):
+```bash
+docker run -d -p 8080:80 vinay10110/weather-app:latest
+```
+App: http://localhost:8080
+
+## How It Works
+- `src/App.js`
+  - Renders `Search`, `Currentweather`, and `Forecast` components.
+  - On selection, fetches current weather (`/weather`) and forecast (`/forecast`) from `REACT_APP_WEATHER_API_URL` using `REACT_APP_WEATHER_API_KEY`.
+- `src/components/search/search.js`
+  - Calls `REACT_APP_GEO_API_URL` with RapidAPI headers for city suggestions; returns `{ value: "lat lon", label: "City CC" }`.
+- `src/components/current-weather/current-weather.js`
+  - Shows city, description, icon, temp, visibility, wind, humidity, pressure.
+- `src/components/forecast/forecast.js`
+  - Displays 7 items in an accordion with icon, description, min/max temp, and details (pressure, humidity, clouds, wind).
+
+## Project Structure
+- `src/components/search/` – city search input
+- `src/components/current-weather/` – current weather card
+- `src/components/forecast/` – forecast list and details
+- `public/icons/` – weather icons matching OpenWeather icon codes (e.g., `01d.png`)
+
+## APIs
+- **GeoDB Cities** (RapidAPI): https://rapidapi.com/wirefreethought/api/geodb-cities
+- **OpenWeather**: https://openweathermap.org/api
+
